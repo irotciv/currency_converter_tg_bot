@@ -59,7 +59,7 @@ def converter(message):
     bot.register_next_step_handler(message, convert)
 
 
-@bot.message_handler(commands=['chart'])
+@bot.message_handler(commands=['rate'])
 def get_chart(message):
     bot.send_message(message.chat.id, 'Enter from and to currency like this: USD,EUR')
     bot.register_next_step_handler(message, chart)
