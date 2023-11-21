@@ -6,8 +6,9 @@ import pandas as pd
 import requests
 import telebot
 from currency_converter import CurrencyConverter
+from config import TOKEN
 
-bot = telebot.TeleBot('6410580430:AAGiwkjzW7nDk4y9a4RSm-173YUSRs5jWr0')
+bot = telebot.TeleBot(TOKEN)
 
 url = 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip'
 response = requests.get(url)
