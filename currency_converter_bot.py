@@ -1,10 +1,11 @@
 import re
+import zipfile
+from io import BytesIO
+
+import pandas as pd
+import requests
 import telebot
 from currency_converter import CurrencyConverter
-import requests
-from io import BytesIO
-import zipfile
-import pandas as pd
 
 bot = telebot.TeleBot('6410580430:AAGiwkjzW7nDk4y9a4RSm-173YUSRs5jWr0')
 
@@ -21,7 +22,7 @@ df.to_csv('eurofxref.csv', index=False)
 
 c = CurrencyConverter('eurofxref.csv')
 description = ('Choose what you want to do:\n/convert - to convert currency\n'
-               '/chart - to see the specific currency rate you want\n\nAllowed currency: ' + ', '.join(c.currencies))
+               '/rate - to see the specific currency rate you want\n\nAllowed currency: ' + ', '.join(c.currencies))
 
 
 def convert(message):
@@ -30,8 +31,8 @@ def convert(message):
         data.append(data[1])
     try:
         result = c.convert(float(data[0]), data[1], data[2])
-        chart = c.convert(1, data[1], data[2])
-        bot.send_message(message.chat.id, f'The chart: {chart}\nThe result: {result}')
+        rate = c.convert(1, data[1], data[2])
+        bot.send_message(message.chat.id, f'The rate: {rate}\nThe result: {result}')
     except Exception as e:
         bot.send_message(message.chat.id, e)
 
@@ -41,7 +42,7 @@ def chart(message):
     if len(data) == 1:
         data.append(data[0])
     try:
-        bot.send_message(message.chat.id, f'The chart: {c.convert(1, data[0], data[1])}')
+        bot.send_message(message.chat.id, f'The rate: {c.convert(1, data[0], data[1])}')
     except Exception as e:
         bot.send_message(message.chat.id, e)
 
@@ -67,7 +68,7 @@ def get_chart(message):
 @bot.message_handler()
 def default(message):
     text = message.text
-    if re.match('[0-9.]+,[a-zA-Z, ]+',text):
+    if re.match('[0-9.]+,[a-zA-Z, ]+', text):
         convert(message)
     elif re.match('[a-zA-Z, ]', text):
         chart(message)
